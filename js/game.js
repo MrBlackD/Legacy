@@ -1,4 +1,4 @@
-var scale=4;
+var scale=2;
 var w=272*scale;
 var h=160*scale;
 var game = new Phaser.Game(w,h);//('100%', '100%');
