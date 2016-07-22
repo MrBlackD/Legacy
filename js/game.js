@@ -1,5 +1,7 @@
-
-var game = new Phaser.Game(272*2,160*2);//('100%', '100%');
+var scale=4;
+var w=272*scale;
+var h=160*scale;
+var game = new Phaser.Game(w,h);//('100%', '100%');
 
 WebFontConfig = {
 
