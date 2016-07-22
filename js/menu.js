@@ -56,10 +56,11 @@ var menuState={
 	    text.align = 'center';
 
 	    //  Our font + size
-	    text.font = 'Architects Daughter';
+	    text.font = 'Press Start 2P';
 	    text.fontWeight = 'bold';
 	    text.fontSize = 70;
 	    text.fill = '#fff';
+
 
 	    //  Here we create our fake reflection :)
 	    //  It's just another Text object, with an alpha gradient and flipped vertically
@@ -73,7 +74,7 @@ var menuState={
 	    textReflect.scale.y = -1;
 
 	    //  Our font + size
-	    textReflect.font = 'Architects Daughter';
+	    textReflect.font = text.font;
 	    textReflect.fontWeight = text.fontWeight;
 	    textReflect.fontSize = text.fontSize;
 

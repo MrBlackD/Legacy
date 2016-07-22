@@ -1,6 +1,7 @@
 var loadState={
 	preload:function(){
-		var loadingLable=game.add.text(game.world.centerX,game.world.centerY,'loading...',{font:'30px Courier',fill:'#fff'});
+		loadingLable=game.add.text(game.world.centerX,game.world.centerY,'loading',{font:'30px Courier',fill:'#fff'});//Press Start 2P
+        count=0;
 		loadingLable.anchor.x=0.5;
 		loadingLable.anchor.y=0.5;
 		
@@ -16,6 +17,17 @@ var loadState={
 	},
 	create:function(){
 		music=game.add.audio('ultrablue');
+        game.time.events.loop(Phaser.Timer.SECOND, function(){
+            count++;
+            if(count>3){
+                loadingLable.text="loading";
+                count=0;
+            }else{
+                loadingLable.text+=".";
+            }
+            
+            
+        }, this);
 
 	},
 	update:function(){
