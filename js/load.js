@@ -12,12 +12,13 @@ var loadState={
 		game.load.audio("ultrablue","assets/sound/ultrablue.mp3");
 
 		game.load.spritesheet("player","assets/player/player.png",32,64);
+		game.load.spritesheet("goblin_peasant","assets/enemies/goblin_peasant.png",32,64);
 		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
 	},
 	create:function(){
 		music=game.add.audio('ultrablue');
-        game.time.events.loop(Phaser.Timer.SECOND, function(){
+        game.time.events.loop(Phaser.Timer.SECOND/2, function(){
             count++;
             if(count>3){
                 loadingLable.text="loading";
@@ -33,7 +34,7 @@ var loadState={
 	update:function(){
 		if(music.isDecoded){
 
-			game.state.start('menu');
+			game.state.start('play');
 		}
 	}
 }

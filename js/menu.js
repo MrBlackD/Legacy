@@ -6,7 +6,7 @@ var menuState={
 	create:function(){
 		
 		music.play();
-		game.renderer.renderSession.roundPixels=true;
+		
 
 
         paralax1 = game.add.tileSprite(0, 0, 272,160, 'back-trees');
