@@ -5,9 +5,8 @@ var menuState={
 	},
 	create:function(){
 		
-		music.play();
 		
-
+		game.stage.backgroundColor = '#ffffff';
 
         paralax1 = game.add.tileSprite(0, 0, 272,160, 'back-trees');
         paralax1.autoScroll(5,0);
@@ -26,7 +25,7 @@ var menuState={
 		paralax3.alpha=0;
 
 
-        player=game.add.sprite(w-32*scale,h-10*scale,'player');
+        player=game.add.sprite(gameWidth-32*scale,gameHeight-10*scale,'player');
         player.anchor.setTo(1,1);
         player.scale.setTo(-scale,scale);
         player.alpha=0;
@@ -95,12 +94,12 @@ var menuState={
 
 	    paralax4_tween.chain(player_tween);
 
-	    text_tween.chain(textReflect_tween);
-	    player_tween.chain(text_tween);
+	    text_tween.start();
+	    //player_tween.chain(text_tween);
 	    
 	    paralax1_tween.start();
 
-		//textReflect_tween.start();
+		textReflect_tween.start();
 	    //text_tween.start();
         
         fpsLabel = game.add.text(0,0, '0',{fontSize:14,fill:'#999'});
@@ -108,6 +107,7 @@ var menuState={
 	    
 	},
 	update:function(){
+		rainSound.stop();
 
 		fpsLabel.text = game.time.fps;
 	}
