@@ -22,7 +22,8 @@ var introState={
 
 		garbage=game.add.group();
 		ashes=game.add.group();
-
+		skeletonPool=game.add.group();
+		
 		introBoss1=game.add.sprite(scale,gameHeight-15*scale,'introBoss1');
 		introBoss1.anchor.setTo(0,1);
 		introBoss1.scale.setTo(scale,scale);
@@ -60,7 +61,7 @@ var introState={
 		}, this);
 		game.time.events.add(6*1000, function(){
 			fadeInOut(In,Out);
-
+			skeletonEvent=game.time.events.loop(200, spawnSkeletons, this);
 			story.text="The greatest magician \nreleased an ancient evil";
 		}, this);
 		game.time.events.add(12*1000, function(){
@@ -69,40 +70,38 @@ var introState={
 		}, this);
 		game.time.events.add(18*1000, function(){
 			fadeInOut(In,Out);
-			introBossForm2();
+			
 			story.text="but when they met \nface to face \nhe lost";
 		}, this);
 		game.time.events.add(24*1000, function(){
 			fadeInOut(In,Out);
-			bloodPool.alpha=0.2;
 			story.text="Then he brought \na magical oath";
 		}, this);
 		game.time.events.add(30*1000, function(){
 			fadeInOut(In,Out);
-			bloodPool.alpha=0.3;
 			story.text="Evil will be enchanted \n";
-
+			game.time.events.remove(skeletonEvent);
 			
 		}, this);
 		game.time.events.add(36*1000, function(){
 			fadeInOut(In,Out);
-			bloodPool.alpha=0.4;
+			introBossForm2();
 			story.text="Until his son's heir \nwill born";
 		}, this);
 		game.time.events.add(42*1000, function(){
 			fadeInOut(In,Out);
-			bloodPool.alpha=0.5;
+			bloodPool.alpha=0.2;
 			story.text="Then he will devote \nhis life to \ndestruction of evil";
 		}, this);
 
 		game.time.events.add(48*1000, function(){
 			fadeInOut(In,Out);
-			bloodPool.alpha=0.6;
-			story.text="If he will lost \nhe must bring \nthe same oath";
+			bloodPool.alpha=0.3;
+			story.text="If he will lost \nhe must to bring \nthe same oath";
 		}, this);
 		game.time.events.add(54*1000, function(){
 			fadeInOut(In,Out);
-			bloodPool.alpha=0.7;	
+			bloodPool.alpha=0.4;	
 			story.text="This is your \ncurse";
 		}, this);
 		game.time.events.add(60*1000, function(){
@@ -113,7 +112,7 @@ var introState={
 
 		}, this);
 		game.time.events.add(66*1000, function(){
-
+			rainSound.stop();
 			game.state.start('menu');
 		}, this);
 		fpsCounter(true);
@@ -122,7 +121,55 @@ var introState={
 	update:function() {
 		clearGarbage();
 		fpsLabel.text = game.time.fps;
+		if(ashes.length>10){
+			ashes.remove(ashes.children[0]);
+		}
+		skeletonPool.forEachAlive(function(skeleton){
+			if(player.x-skeleton.x<=game.rnd.integerInRange(100,300)){
 
+				choose=game.rnd.pick(['fireEater','lightningStrike']);
+				skill=game.add.sprite(skeleton.x,skeleton.y+skeleton.height/2,choose);
+				skill.scale.setTo(3/scale,3/scale);
+				skill.anchor.x=0.5;
+				skill.anchor.y=1;
+				skill.tint=0x707070;
+				play=skill.animations.add('play', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ,13 ,14 ,15, 16, 17, 18, 19, 20, 21, 22 ], 40);
+				if(choose=='lightningStrike'){
+					lightningStrikeSound=game.add.audio("lightningStrikeSound");
+					lightningStrikeSound.volume=0.5;
+					lightningStrikeSound.play();
+				}
+				if(choose=='fireEater'){
+					fireEaterSound=game.add.audio("fireEaterSound");
+					fireEaterSound.volume=0.5;
+					fireEaterSound.play();
+				}
+				skill.animations.play('play');
+				player.animations.play(choose);
+				//garbage.add(fireEater);
+				skeleton.kill();
+				blackExplosion=game.add.sprite(skill.x,skill.y,'blackExplosion');
+				blackExplosion.anchor.setTo(0.5,1); 
+				blackExplosion.scale.setTo(scale*3,scale*3);
+				blackExplosion.tint=0x202020;
+				blackExplosion.animations.add('play',[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],40);
+				blackExplosion.play('play');
+				play.onComplete.add(function(){
+					ash=game.add.sprite(skeleton.x,skeleton.y,'bloodSkeleton',game.rnd.pick([54,55]));//15,16,52,54,55
+					ash.rotation=game.rnd.integerInRange(0,70)*0.1;
+					ash.anchor.setTo(0,1); 
+					ash.scale.setTo(scale,scale);
+					ash.tint=0x202020;
+					ashes.add(ash);
+
+				}, this);
+
+			}else{
+				skeleton.x+=game.rnd.integerInRange(1,6);
+			}
+			
+
+		},this);
 
 		drops.forEach(function(drop){
 			if(drop.y>=game.height-60){
@@ -198,6 +245,9 @@ function tintScreen(color){
 	player.tint=color;
 	for(var i=0;i<paralaxBackground.length;i++)
 		paralaxBackground[i].tint=color;
+	skeletonPool.forEachAlive(function(skeleton){
+		skeleton.tint=color;
+	},this)
 
 	introBoss1.tint=color;
 }
@@ -232,10 +282,9 @@ function lightning(){
 	
 	tmp.scale.y=0.5;
 	game.add.tween(tmp).to( {alpha: 0}, 200, Phaser.Easing.Exponential.Out, true).onComplete.add(function () {
-		garbage.add(this);
-		this.kill();
+		garbage.add(tmp);
 
-	},tmp);
+	});
 
 	game.time.events.add(Phaser.Timer.SECOND/5, function(){
 		tintScreen(0x505050);
@@ -268,7 +317,15 @@ function fadeOutAll(){
 
 }
 
-
+function spawnSkeletons(){
+	var enemy=game.add.sprite(-32*scale,gameHeight-15*scale,'bloodSkeleton');
+	enemy.anchor.setTo(0,1);
+	enemy.scale.setTo(scale,scale);
+	enemy.tint=0x505050;
+	enemy.animations.add('walk', [1, 2, 3, 4, 5, 6], 10, true);
+	enemy.animations.play('walk');
+	skeletonPool.add(enemy);
+}
 
 function introBoss(){
 
@@ -276,7 +333,7 @@ function introBoss(){
 	introBoss1.tint=0x000000;
 	introBoss1.animations.add('idle', [1, 2, 3, 4, 5, 6,7,8], 8, true);
 	introBoss1.animations.play('idle');
-	game.add.tween(introBoss1).to( {alpha: 1}, 25000, Phaser.Easing.Linear.None, true).onComplete.add(function(){
+	game.add.tween(introBoss1).to( {alpha: 1}, 30000, Phaser.Easing.Linear.None, true).onComplete.add(function(){
 
 		
 	});
@@ -291,10 +348,10 @@ function introBossForm2(){
 				return;
 		game.add.tween(item).to( {alpha: 0}, Out, Phaser.Easing.Exponential.Out, true).onComplete.add(function(){
 			if(item==introBoss1){
-				garbage.removeAll();
 				introBoosVoice.play();
 				introBoss1.loadTexture('introBoss3',null,false);
-				game.add.tween(introBoss1).to( {x: player.x}, 54000, Phaser.Easing.Linear.None, true)
+				ashes.removeAll();
+				game.add.tween(introBoss1).to( {x: player.x}, 36000, Phaser.Easing.Linear.None, true)
 			}
 
 			if(item==player){

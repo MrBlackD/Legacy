@@ -48,6 +48,7 @@ var loadState={
 		game.load.spritesheet("blackExplosion","assets/spells/blackExplosion.png",50,47);
 
 		game.load.spritesheet("magicBarrier","assets/spells/magicBarrier.png",128,128);
+		game.load.spritesheet("bloodPool","assets/spells/bloodPool.png",128,128);
 
 		game.load.image("frame","assets/path/frame-0-grey.png");
 		game.load.image("path-monk","assets/path/monk/runes-orange-1.png");
