@@ -49,6 +49,7 @@ var menuState={
 
         text = game.add.text(game.world.centerX, game.world.centerY, "LEGACY");
         text_tween=game.add.tween(text).to( { alpha: 1 }, 5000, "Linear");
+
         text.alpha=0;
 	    //  Centers the text
 	    text.anchor.set(0.5);
@@ -101,13 +102,13 @@ var menuState={
 
 		textReflect_tween.start();
 	    //text_tween.start();
-        
+        rainSound.stop();
         fpsLabel = game.add.text(0,0, '0',{fontSize:14,fill:'#999'});
         fpsLabel.fixedToCamera=true;
 	    
 	},
 	update:function(){
-		rainSound.stop();
+		
 
 		fpsLabel.text = game.time.fps;
 	}
